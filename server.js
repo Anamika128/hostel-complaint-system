@@ -1,23 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const os = require('os');
 
 const app = express();
-const PORT = 5000;
-
-// Get local IP address
-const networkInterfaces = os.networkInterfaces();
-let localIp = 'localhost';
-
-Object.keys(networkInterfaces).forEach(interfaceName => {
-    networkInterfaces[interfaceName].forEach(iface => {
-        if (iface.family === 'IPv4' && !iface.internal) {
-            localIp = iface.address;
-        }
-    });
-});
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -31,38 +19,41 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Database error:', err.message);
     } else {
         console.log('✅ SQLite Database Connected');
-        
-        db.run(`CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT UNIQUE,
-            password TEXT,
-            room_number TEXT,
-            hostel_name TEXT,
-            role TEXT DEFAULT 'student',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
-        
-        db.run(`CREATE TABLE IF NOT EXISTS complaints (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT,
-            description TEXT,
-            category TEXT,
-            status TEXT DEFAULT 'pending',
-            student_id INTEGER,
-            student_name TEXT,
-            room_number TEXT,
-            hostel_name TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            resolved_at DATETIME
-        )`);
-        
-        console.log('📊 Database tables ready');
+        initDatabase();
     }
 });
 
+function initDatabase() {
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT UNIQUE,
+        password TEXT,
+        role TEXT DEFAULT 'student',
+        room_number TEXT,
+        hostel_name TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS complaints (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        description TEXT,
+        category TEXT,
+        status TEXT DEFAULT 'pending',
+        student_id INTEGER,
+        student_name TEXT,
+        room_number TEXT,
+        hostel_name TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        resolved_at DATETIME
+    )`);
+    
+    console.log('📊 Database tables ready');
+}
+
 // Helper functions
-const dbRun = (sql, params) => {
+const dbRun = (sql, params = []) => {
     return new Promise((resolve, reject) => {
         db.run(sql, params, function(err) {
             if (err) reject(err);
@@ -71,7 +62,7 @@ const dbRun = (sql, params) => {
     });
 };
 
-const dbGet = (sql, params) => {
+const dbGet = (sql, params = []) => {
     return new Promise((resolve, reject) => {
         db.get(sql, params, (err, result) => {
             if (err) reject(err);
@@ -80,7 +71,7 @@ const dbGet = (sql, params) => {
     });
 };
 
-const dbAll = (sql, params) => {
+const dbAll = (sql, params = []) => {
     return new Promise((resolve, reject) => {
         db.all(sql, params, (err, rows) => {
             if (err) reject(err);
@@ -89,47 +80,49 @@ const dbAll = (sql, params) => {
     });
 };
 
-// API Routes
+// ============ API ROUTES ============
+
+// Test route
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Server is running!', status: 'active' });
 });
 
-// Register
+// Register user
 app.post('/api/register', async (req, res) => {
     try {
         const { name, email, password, roomNumber, hostelName } = req.body;
         
-        const existing = await dbGet('SELECT id FROM users WHERE email = ?', [email]);
-        if (existing) {
+        const existingUser = await dbGet('SELECT id FROM users WHERE email = ?', [email]);
+        if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
         
-        await dbRun(
+        const result = await dbRun(
             'INSERT INTO users (name, email, password, room_number, hostel_name) VALUES (?, ?, ?, ?, ?)',
             [name, email, password, roomNumber, hostelName]
         );
         
-        res.json({ message: 'Registration successful! Please login.' });
+        res.json({ message: 'Registration successful!', id: result.lastID });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Login
+// Login user
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
         const user = await dbGet('SELECT * FROM users WHERE email = ? AND password = ?', [email, password]);
         if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
         
         res.json({
             _id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role || 'student',
+            role: user.role,
             roomNumber: user.room_number,
             hostelName: user.hostel_name,
             message: 'Login successful!'
@@ -178,9 +171,7 @@ app.put('/api/complaints/:id/status', async (req, res) => {
         }
         
         await dbRun(
-            `UPDATE complaints 
-             SET status = ?, resolved_at = ? 
-             WHERE id = ?`,
+            `UPDATE complaints SET status = ?, resolved_at = ? WHERE id = ?`,
             [status, resolvedAt, complaintId]
         );
         
@@ -209,17 +200,26 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-// Serve frontend
+// Make admin (optional)
+app.post('/api/make-admin', async (req, res) => {
+    try {
+        const { email } = req.body;
+        await dbRun('UPDATE users SET role = ? WHERE email = ?', ['admin', email]);
+        res.json({ message: `User ${email} is now admin!` });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// ============ SERVE FRONTEND ============
+// THIS IS THE IMPORTANT PART - serves your HTML file
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start server on all network interfaces
+// Start server
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n🚀 Server running on:`);
-    console.log(`   💻 Local: http://localhost:${PORT}`);
-    console.log(`   📱 Mobile: http://${localIp}:${PORT}`);
-    console.log(`\n📝 Test API: http://localhost:${PORT}/api/test`);
-    console.log(`\n✅ Make sure your phone is on the SAME Wi-Fi network!`);
-    console.log(`⚠️  Windows Firewall may ask for permission - click "Allow"\n`);
+    console.log(`\n🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📝 Test API: http://localhost:${PORT}/api/test`);
+    console.log(`🌐 Open your browser at: http://localhost:${PORT}\n`);
 });
