@@ -1,0 +1,10 @@
+node_modules/
+database.sqlite
+.DS_Store
+*.log
+.envnode
+echo node_modules/ > .gitignore
+echo database.sqlite >> .gitignore
+echo .DS_Store >> .gitignore
+echo *.log >> .gitignore
+echo .env

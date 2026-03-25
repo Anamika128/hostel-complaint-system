@@ -2,649 +2,924 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel Complaint System - Track Complaints</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#667eea">
+    <title>Hostel Complaint System</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding-bottom: 70px;
         }
-        
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 16px;
         }
-        
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            flex-wrap: wrap;
         }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        /* Stats Cards */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
+
+        .logo {
+            font-size: 1.25rem;
             color: #667eea;
-        }
-        
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
-            font-size: 0.9rem;
-        }
-        
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
             font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
             color: #333;
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: color 0.3s;
+            font-size: 14px;
+            padding: 8px 12px;
             border-radius: 8px;
+            background: #f5f5f5;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms */
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 500px;
+            margin: 24px auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .form-card h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
             font-size: 16px;
+            font-family: inherit;
             transition: border-color 0.3s;
         }
-        
-        input:focus, select:focus, textarea:focus {
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
-        
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-        }
-        
-        /* Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .tab-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 8px;
             font-size: 16px;
+            font-weight: 500;
             transition: all 0.3s;
+            text-align: center;
         }
-        
-        .tab-btn:hover {
-            background: rgba(255,255,255,0.3);
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
         }
-        
-        .tab-btn.active {
+
+        .btn-primary:hover,
+        .btn-primary:active {
+            background: #5a67d8;
+            transform: scale(0.98);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
             background: white;
+            padding: 20px 12px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat-card p {
+            font-size: 28px;
+            font-weight: bold;
             color: #667eea;
         }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* Messages */
-        .message {
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            display: none;
-        }
-        
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
-        }
-        
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-        
-        /* Complaint Items */
+
+        /* Complaints List */
         .complaint-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
             transition: all 0.3s;
-        }
-        
-        .complaint-item:hover {
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        
+
+        .complaint-item:active {
+            transform: scale(0.98);
+        }
+
         .complaint-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
-        
-        .badge {
-            display: inline-block;
+
+        .complaint-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .complaint-status {
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 500;
         }
-        
-        .badge-pending {
-            background: #ffc107;
-            color: #000;
+
+        .status-pending {
+            background: #fef3c7;
+            color: #f59e0b;
         }
-        
-        .badge-in-progress {
-            background: #17a2b8;
-            color: white;
+
+        .status-in_progress {
+            background: #dbeafe;
+            color: #3b82f6;
         }
-        
-        .badge-resolved {
-            background: #28a745;
-            color: white;
+
+        .status-resolved {
+            background: #d1fae5;
+            color: #10b981;
         }
-        
-        .badge-rejected {
-            background: #dc3545;
-            color: white;
+
+        .complaint-meta {
+            color: #666;
+            font-size: 12px;
+            margin-top: 8px;
         }
-        
-        .status-select {
-            margin-top: 10px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+
+        /* Profile Section */
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .info-card {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .info-card h4 {
+            color: #667eea;
+            margin-bottom: 8px;
             font-size: 14px;
         }
-        
-        .user-info {
-            background: #e8f5e9;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 15px;
+
+        .info-card p {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 12px;
         }
-        
+
+        /* Alerts */
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 24px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f0f0f0;
+        }
+
+        .close:active {
+            background: #ddd;
+        }
+
+        /* Footer */
         footer {
+            background: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* Loading Spinner */
+        .loading {
             text-align: center;
             color: white;
-            margin-top: 30px;
             padding: 20px;
         }
-        
+
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
+            .navbar .container {
+                flex-direction: column;
+                gap: 12px;
             }
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
+            
+            .nav-links {
+                justify-content: center;
             }
+            
+            .nav-links a {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            .stats-grid {
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 16px 8px;
+            }
+            
+            .stat-card p {
+                font-size: 24px;
+            }
+            
+            .form-card {
+                padding: 20px;
+                margin: 16px;
+            }
+            
+            .modal-content {
+                margin: 20% auto;
+                padding: 20px;
+            }
+        }
+
+        /* Touch-friendly targets */
+        button, .btn, .complaint-item, .nav-links a {
+            min-height: 44px;
+            touch-action: manipulation;
         }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">🏠 Hostel Complaint System</h1>
+            <div class="nav-links" id="navLinks">
+                <a onclick="showPage('dashboard')" id="dashboardLink" style="display:none;">Dashboard</a>
+                <a onclick="showPage('submit')" id="submitLink" style="display:none;">Submit</a>
+                <a onclick="showPage('track')" id="trackLink" style="display:none;">Track</a>
+                <a onclick="logout()" id="logoutLink" style="display:none;">Logout</a>
+                <a onclick="showPage('login')" id="loginLink">Login</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <div class="header">
-            <h1>🏠 Hostel Complaint System</h1>
-            <p>Submit, track, and manage your hostel complaints</p>
-        </div>
-        
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="showTab('register')">📝 Register</button>
-            <button class="tab-btn" onclick="showTab('login')">🔐 Login</button>
-            <button class="tab-btn" onclick="showTab('complaint')">📌 Submit Complaint</button>
-            <button class="tab-btn" onclick="showTab('complaints')">📋 Track Complaints</button>
-        </div>
-        
-        <!-- Register Tab -->
-        <div id="register" class="tab-content active">
-            <div class="card">
-                <h2>📝 Create New Account</h2>
-                <form id="registerForm">
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <div class="form-card">
+                <h2>Welcome Back</h2>
+                <div id="loginMessage"></div>
+                <form onsubmit="login(event)">
                     <div class="form-group">
-                        <label>Full Name:</label>
-                        <input type="text" id="regName" required placeholder="Enter your full name">
+                        <label>📧 Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
-                        <label>Email:</label>
-                        <input type="email" id="regEmail" required placeholder="Enter your email">
+                        <label>🔒 Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
                     </div>
-                    <div class="form-group">
-                        <label>Password:</label>
-                        <input type="password" id="regPassword" required placeholder="Create a password">
-                    </div>
-                    <div class="form-group">
-                        <label>Room Number:</label>
-                        <input type="text" id="regRoom" required placeholder="e.g., A-101, B-202">
-                    </div>
-                    <div class="form-group">
-                        <label>Hostel Name:</label>
-                        <input type="text" id="regHostel" required placeholder="Hostel name">
-                    </div>
-                    <button type="submit">Register Now</button>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
                 </form>
-                <div id="regMessage" class="message"></div>
+                <p style="text-align:center; margin-top:16px;">
+                    New user? <a href="#" onclick="showRegister()">Create account</a>
+                </p>
+                <div style="margin-top:20px; padding:12px; background:#f5f5f5; border-radius:10px;">
+                    <p style="font-size:12px; color:#666; margin-bottom:8px;"><strong>Demo Accounts:</strong></p>
+                    <p style="font-size:12px;">👑 Admin: admin@hostel.com / admin123</p>
+                    <p style="font-size:12px;">🎓 Student: student@test.com / student123</p>
+                </div>
+            </div>
+
+            <div id="registerForm" style="display:none;" class="form-card">
+                <h2>Create Account</h2>
+                <div id="registerMessage"></div>
+                <form onsubmit="register(event)">
+                    <div class="form-group">
+                        <label>👤 Full Name</label>
+                        <input type="text" id="regName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>📧 Email</label>
+                        <input type="email" id="regEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>🔒 Password (min 6 characters)</label>
+                        <input type="password" id="regPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>🏠 Room Number</label>
+                        <input type="text" id="regRoom" placeholder="Optional">
+                    </div>
+                    <div class="form-group">
+                        <label>🏢 Hostel Name</label>
+                        <input type="text" id="regHostel" placeholder="Optional">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </form>
+                <p style="text-align:center; margin-top:16px;">
+                    Already have an account? <a href="#" onclick="showLogin()">Login here</a>
+                </p>
             </div>
         </div>
-        
-        <!-- Login Tab -->
-        <div id="login" class="tab-content">
-            <div class="card">
-                <h2>🔐 Login to Your Account</h2>
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label>Email:</label>
-                        <input type="email" id="loginEmail" required placeholder="Enter your email">
-                    </div>
-                    <div class="form-group">
-                        <label>Password:</label>
-                        <input type="password" id="loginPassword" required placeholder="Enter your password">
-                    </div>
-                    <button type="submit">Login</button>
-                </form>
-                <div id="loginMessage" class="message"></div>
-                <div id="userInfo"></div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <div id="dashboardContent">
+                <div class="loading">Loading dashboard...</div>
             </div>
         </div>
-        
-        <!-- Submit Complaint Tab -->
-        <div id="complaint" class="tab-content">
-            <div class="card">
-                <h2>📝 Submit New Complaint</h2>
-                <form id="complaintForm">
+
+        <!-- Submit Complaint Page -->
+        <div id="submitPage" class="page">
+            <div class="form-card">
+                <h2>Submit Complaint</h2>
+                <div id="submitMessage"></div>
+                <form onsubmit="submitComplaint(event)">
                     <div class="form-group">
-                        <label>Title:</label>
-                        <input type="text" id="complaintTitle" required placeholder="Brief title of the complaint">
+                        <label>📝 Title</label>
+                        <input type="text" id="complaintTitle" placeholder="Brief title" required>
                     </div>
                     <div class="form-group">
-                        <label>Category:</label>
+                        <label>📂 Category</label>
                         <select id="complaintCategory" required>
-                            <option value="">Select Category</option>
-                            <option value="electrical">⚡ Electrical (Lights, Fans, etc.)</option>
-                            <option value="plumbing">💧 Plumbing (Leakage, Taps, etc.)</option>
-                            <option value="cleaning">🧹 Cleaning (Room, Common area)</option>
-                            <option value="furniture">🪑 Furniture (Bed, Table, Chair)</option>
-                            <option value="internet">🌐 Internet/WiFi Issue</option>
+                            <option value="">Select category</option>
+                            <option value="maintenance">🔧 Maintenance</option>
+                            <option value="cleaning">🧹 Cleaning</option>
+                            <option value="food">🍕 Food Quality</option>
+                            <option value="electricity">⚡ Electricity</option>
+                            <option value="water">💧 Water Supply</option>
+                            <option value="security">🛡️ Security</option>
                             <option value="other">📌 Other</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Description:</label>
-                        <textarea id="complaintDesc" rows="4" required placeholder="Describe your complaint in detail..."></textarea>
+                        <label>📄 Description</label>
+                        <textarea id="complaintDescription" rows="5" placeholder="Detailed description" required></textarea>
                     </div>
-                    <button type="submit">Submit Complaint</button>
+                    <button type="submit" class="btn btn-primary btn-block">Submit Complaint</button>
                 </form>
-                <div id="complaintMessage" class="message"></div>
             </div>
         </div>
-        
-        <!-- Track Complaints Tab -->
-        <div id="complaints" class="tab-content">
-            <div class="card">
-                <h2>📊 Complaint Dashboard</h2>
-                <div id="statsContainer" class="stats-container">
-                    <div class="stat-card">
-                        <div class="stat-number">-</div>
-                        <div class="stat-label">Total Complaints</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">-</div>
-                        <div class="stat-label">Pending</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">-</div>
-                        <div class="stat-label">In Progress</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">-</div>
-                        <div class="stat-label">Resolved</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>📋 All Complaints</h2>
-                <div id="complaintsList">Loading complaints...</div>
+
+        <!-- Track Complaints Page -->
+        <div id="trackPage" class="page">
+            <h2 style="color:white; margin-bottom:16px;">📋 Your Complaints</h2>
+            <div id="trackingList">
+                <div class="loading">Loading complaints...</div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Complaint Modal -->
+    <div id="complaintModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="complaintDetails"></div>
+        </div>
+    </div>
+
     <footer>
-        <p>© 2024 Hostel Complaint System | Track and manage complaints efficiently</p>
+        <div class="container">
+            <p>© 2024 Hostel Complaint System | Track and manage complaints efficiently</p>
+        </div>
     </footer>
-    
+
     <script>
+        const API_URL = '';
+        let token = localStorage.getItem('token');
         let currentUser = null;
-        
-        // Tab switching
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById(tabName).classList.add('active');
+
+        // Check auth on load
+        if (token) {
+            try {
+                currentUser = JSON.parse(localStorage.getItem('user'));
+                showLoggedInUI();
+                showPage('dashboard');
+                loadDashboard();
+            } catch(e) {
+                logout();
+            }
+        } else {
+            showLoggedOutUI();
+            showPage('login');
+        }
+
+        // API Request helper
+        async function apiRequest(endpoint, options = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
             
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            if (tabName === 'complaints') {
-                loadComplaints();
-                loadStats();
+            try {
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    ...options,
+                    headers
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Something went wrong');
+                }
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
             }
         }
-        
-        // Register User
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+
+        // Login
+        async function login(e) {
             e.preventDefault();
-            
-            const userData = {
-                name: document.getElementById('regName').value,
-                email: document.getElementById('regEmail').value,
-                password: document.getElementById('regPassword').value,
-                roomNumber: document.getElementById('regRoom').value,
-                hostelName: document.getElementById('regHostel').value
-            };
-            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
             try {
-                const response = await fetch('/api/register', {
+                const data = await apiRequest('/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userData)
+                    body: JSON.stringify({ email, password })
                 });
-                
-                const data = await response.json();
-                const msgDiv = document.getElementById('regMessage');
-                
-                if (response.ok) {
-                    msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ ' + data.message;
-                    document.getElementById('registerForm').reset();
-                    
-                    setTimeout(() => {
-                        showTab('login');
-                        document.getElementById('regMessage').className = 'message';
-                    }, 2000);
-                } else {
-                    msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + data.message;
-                }
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                showMessage('loginMessage', '✅ Login successful!', 'success');
+                setTimeout(() => {
+                    showLoggedInUI();
+                    showPage('dashboard');
+                    loadDashboard();
+                }, 1000);
             } catch (error) {
-                document.getElementById('regMessage').className = 'message error';
-                document.getElementById('regMessage').textContent = '❌ Error connecting to server';
+                showMessage('loginMessage', error.message, 'error');
             }
-        });
-        
-        // Login User
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        }
+
+        // Register
+        async function register(e) {
             e.preventDefault();
-            
-            const loginData = {
-                email: document.getElementById('loginEmail').value,
-                password: document.getElementById('loginPassword').value
-            };
-            
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const room_number = document.getElementById('regRoom').value;
+            const hostel_name = document.getElementById('regHostel').value;
+
             try {
-                const response = await fetch('/api/login', {
+                const data = await apiRequest('/api/register', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(loginData)
+                    body: JSON.stringify({ name, email, password, room_number, hostel_name })
                 });
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                showMessage('registerMessage', '✅ Registration successful!', 'success');
+                setTimeout(() => {
+                    showLoggedInUI();
+                    showPage('dashboard');
+                    loadDashboard();
+                }, 1000);
+            } catch (error) {
+                showMessage('registerMessage', error.message, 'error');
+            }
+        }
+
+        // Load Dashboard
+        async function loadDashboard() {
+            try {
+                const [statsData, profileData, complaintsData] = await Promise.all([
+                    apiRequest('/api/dashboard/stats'),
+                    apiRequest('/api/users/profile'),
+                    apiRequest('/api/complaints')
+                ]);
                 
-                const data = await response.json();
-                const msgDiv = document.getElementById('loginMessage');
-                
-                if (response.ok) {
-                    currentUser = data;
-                    msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ ' + data.message;
-                    document.getElementById('userInfo').innerHTML = `
-                        <div class="user-info">
-                            ✅ Logged in as: <strong>${data.name}</strong><br>
-                            📍 Room: ${data.roomNumber || 'Not set'} | 🏠 Hostel: ${data.hostelName || 'Not set'}<br>
-                            👤 Role: ${data.role || 'student'}
+                const stats = statsData.stats;
+                const user = profileData.user;
+                const complaints = complaintsData.complaints || [];
+
+                document.getElementById('dashboardContent').innerHTML = `
+                    <div class="profile-info">
+                        <div class="info-card">
+                            <h4>👋 Welcome</h4>
+                            <p>${escapeHtml(user.name)}</p>
+                            <p style="font-size:12px; color:#667eea;">${user.role === 'admin' ? '👑 Admin' : '🎓 Student'}</p>
                         </div>
-                    `;
-                    document.getElementById('loginForm').reset();
-                } else {
-                    msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + data.message;
-                }
-            } catch (error) {
-                document.getElementById('loginMessage').className = 'message error';
-                document.getElementById('loginMessage').textContent = '❌ Error connecting to server';
-            }
-        });
-        
-        // Submit Complaint
-        document.getElementById('complaintForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!currentUser) {
-                document.getElementById('complaintMessage').className = 'message error';
-                document.getElementById('complaintMessage').textContent = '❌ Please login first before submitting a complaint!';
-                return;
-            }
-            
-            const complaintData = {
-                title: document.getElementById('complaintTitle').value,
-                description: document.getElementById('complaintDesc').value,
-                category: document.getElementById('complaintCategory').value,
-                studentId: currentUser._id,
-                studentName: currentUser.name,
-                roomNumber: currentUser.roomNumber || 'Not specified',
-                hostelName: currentUser.hostelName || 'Not specified'
-            };
-            
-            try {
-                const response = await fetch('/api/complaints', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(complaintData)
-                });
-                
-                const data = await response.json();
-                const msgDiv = document.getElementById('complaintMessage');
-                
-                if (response.ok) {
-                    msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ ' + data.message;
-                    document.getElementById('complaintForm').reset();
-                    
-                    // Reload complaints if on that tab
-                    if (document.getElementById('complaints').classList.contains('active')) {
-                        loadComplaints();
-                        loadStats();
-                    }
-                } else {
-                    msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + data.message;
-                }
-            } catch (error) {
-                document.getElementById('complaintMessage').className = 'message error';
-                document.getElementById('complaintMessage').textContent = '❌ Error submitting complaint';
-            }
-        });
-        
-        // Update Complaint Status
-        async function updateStatus(complaintId, newStatus) {
-            try {
-                const response = await fetch(`/api/complaints/${complaintId}/status`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: newStatus })
-                });
-                
-                const result = await response.json();
-                if (response.ok) {
-                    alert(`✅ Complaint marked as ${newStatus.toUpperCase()}`);
-                    loadComplaints(); // Refresh the list
-                    loadStats(); // Refresh stats
-                } else {
-                    alert('❌ Error updating status');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Failed to update status');
-            }
-        }
-        
-        // Load Statistics
-        async function loadStats() {
-            try {
-                const response = await fetch('/api/stats');
-                const stats = await response.json();
-                
-                document.getElementById('statsContainer').innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-number">${stats.total || 0}</div>
-                        <div class="stat-label">Total Complaints</div>
+                        <div class="info-card">
+                            <h4>🏠 Room Number</h4>
+                            <p>${user.room_number || 'Not set'}</p>
+                            <button onclick="editProfile()" class="btn btn-small btn-primary">Edit</button>
+                        </div>
+                        <div class="info-card">
+                            <h4>🏢 Hostel</h4>
+                            <p>${user.hostel_name || 'Not set'}</p>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${stats.pending || 0}</div>
-                        <div class="stat-label">Pending</div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total</h3>
+                            <p>${stats.total}</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pending</h3>
+                            <p>${stats.pending}</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>In Progress</h3>
+                            <p>${stats.inProgress}</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Resolved</h3>
+                            <p>${stats.resolved}</p>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${stats.inProgress || 0}</div>
-                        <div class="stat-label">In Progress</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${stats.resolved || 0}</div>
-                        <div class="stat-label">Resolved</div>
+
+                    <h3 style="color:white; margin: 16px 0;">📌 Recent Complaints</h3>
+                    <div id="recentComplaints">
+                        ${complaints.length === 0 ? 
+                            '<div class="complaint-item"><p style="color:#666;">No complaints yet. <a href="#" onclick="showPage(\'submit\')">Submit your first complaint</a></p></div>' : 
+                            complaints.slice(0,5).map(c => `
+                                <div class="complaint-item" onclick="viewComplaint(${c.id})">
+                                    <div class="complaint-header">
+                                        <span class="complaint-title">${escapeHtml(c.title)}</span>
+                                        <span class="complaint-status status-${c.status}">${c.status.replace('_', ' ')}</span>
+                                    </div>
+                                    <div class="complaint-meta">
+                                        📅 ${new Date(c.created_at).toLocaleDateString()} | 📂 ${c.category}
+                                    </div>
+                                </div>
+                            `).join('')}
                     </div>
                 `;
             } catch (error) {
-                console.error('Error loading stats:', error);
+                console.error('Error loading dashboard:', error);
+                document.getElementById('dashboardContent').innerHTML = `
+                    <div class="form-card">
+                        <p style="color:red; text-align:center;">❌ Error loading dashboard</p>
+                        <p style="text-align:center; margin-top:10px;">Please check if server is running</p>
+                        <button onclick="loadDashboard()" class="btn btn-primary btn-block" style="margin-top:10px;">Retry</button>
+                    </div>
+                `;
             }
         }
-        
-        // Load All Complaints
-        async function loadComplaints() {
+
+        // Submit Complaint
+        async function submitComplaint(e) {
+            e.preventDefault();
+            const title = document.getElementById('complaintTitle').value;
+            const category = document.getElementById('complaintCategory').value;
+            const description = document.getElementById('complaintDescription').value;
+
             try {
-                const response = await fetch('/api/complaints');
-                const complaints = await response.json();
-                const container = document.getElementById('complaintsList');
-                
-                if (complaints.length === 0) {
-                    container.innerHTML = '<p>📭 No complaints yet. Be the first to submit!</p>';
-                    return;
-                }
-                
-                container.innerHTML = complaints.map(complaint => `
-                    <div class="complaint-item">
-                        <div class="complaint-header">
-                            <strong>📌 #${complaint.id} - ${complaint.title}</strong>
-                            <span class="badge badge-${complaint.status}">${complaint.status.toUpperCase()}</span>
-                        </div>
-                        <small>🏷️ Category: ${complaint.category} | 👤 By: ${complaint.student_name} | 🚪 Room: ${complaint.room_number}</small>
-                        <p style="margin-top: 8px;">${complaint.description}</p>
-                        <small>📅 Submitted: ${new Date(complaint.created_at).toLocaleString()}</small>
-                        ${currentUser && (currentUser.role === 'admin' || currentUser.role === 'warden') ? `
-                            <div style="margin-top: 10px;">
-                                <select onchange="updateStatus(${complaint.id}, this.value)" class="status-select">
-                                    <option value="pending" ${complaint.status === 'pending' ? 'selected' : ''}>⏳ Pending</option>
-                                    <option value="in-progress" ${complaint.status === 'in-progress' ? 'selected' : ''}>🔄 In Progress</option>
-                                    <option value="resolved" ${complaint.status === 'resolved' ? 'selected' : ''}>✅ Resolved</option>
-                                    <option value="rejected" ${complaint.status === 'rejected' ? 'selected' : ''}>❌ Rejected</option>
-                                </select>
+                await apiRequest('/api/complaints', {
+                    method: 'POST',
+                    body: JSON.stringify({ title, category, description })
+                });
+                showMessage('submitMessage', '✅ Complaint submitted successfully!', 'success');
+                setTimeout(() => {
+                    showPage('track');
+                    loadTrackComplaints();
+                }, 1500);
+            } catch (error) {
+                showMessage('submitMessage', error.message, 'error');
+            }
+        }
+
+        // Load Track Complaints
+        async function loadTrackComplaints() {
+            try {
+                const data = await apiRequest('/api/complaints');
+                const complaints = data.complaints || [];
+
+                document.getElementById('trackingList').innerHTML = complaints.length === 0 ? 
+                    '<div class="complaint-item"><p style="color:#666;">No complaints yet. <a href="#" onclick="showPage(\'submit\')">Submit your first complaint</a></p></div>' :
+                    complaints.map(c => `
+                        <div class="complaint-item" onclick="viewComplaint(${c.id})">
+                            <div class="complaint-header">
+                                <span class="complaint-title">${escapeHtml(c.title)}</span>
+                                <span class="complaint-status status-${c.status}">${c.status.replace('_', ' ')}</span>
                             </div>
-                        ` : ''}
-                    </div>
-                `).join('');
+                            <div class="complaint-meta">
+                                📂 ${c.category} | 📅 ${new Date(c.created_at).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `).join('');
             } catch (error) {
                 console.error('Error loading complaints:', error);
-                document.getElementById('complaintsList').innerHTML = '<p>❌ Error loading complaints. Make sure server is running!</p>';
+                document.getElementById('trackingList').innerHTML = '<div class="complaint-item"><p style="color:red;">Error loading complaints. Please refresh.</p></div>';
             }
         }
-        
-        // Auto-refresh complaints every 10 seconds if on complaints tab
-        setInterval(() => {
-            if (document.getElementById('complaints').classList.contains('active')) {
-                loadComplaints();
-                loadStats();
+
+        // View Complaint
+        async function viewComplaint(id) {
+            try {
+                const data = await apiRequest(`/api/complaints/${id}`);
+                const { complaint, comments } = data;
+
+                document.getElementById('complaintDetails').innerHTML = `
+                    <h3>📌 ${escapeHtml(complaint.title)}</h3>
+                    <span class="complaint-status status-${complaint.status}" style="display:inline-block; margin:12px 0;">
+                        ${complaint.status.replace('_', ' ')}
+                    </span>
+                    <p><strong>📂 Category:</strong> ${complaint.category}</p>
+                    <p><strong>📄 Description:</strong></p>
+                    <p style="background:#f5f5f5; padding:12px; border-radius:8px;">${escapeHtml(complaint.description)}</p>
+                    <p><strong>📅 Submitted:</strong> ${new Date(complaint.created_at).toLocaleString()}</p>
+                    ${complaint.admin_response ? `<p><strong>👑 Admin Response:</strong> ${escapeHtml(complaint.admin_response)}</p>` : ''}
+                    
+                    <h4 style="margin-top:20px;">💬 Comments & Updates</h4>
+                    <div style="background:#f5f5f5; padding:12px; border-radius:8px; max-height:300px; overflow-y:auto;">
+                        ${comments.length === 0 ? '<p>No comments yet.</p>' : 
+                            comments.map(comment => `
+                                <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #ddd;">
+                                    <strong>${escapeHtml(comment.name)} ${comment.role === 'admin' ? '👑' : '🎓'}</strong>
+                                    <small style="color:#666;"> - ${new Date(comment.created_at).toLocaleString()}</small>
+                                    <p style="margin-top:8px;">${escapeHtml(comment.comment)}</p>
+                                </div>
+                            `).join('')}
+                    </div>
+                    
+                    <div style="margin-top:20px;">
+                        <form onsubmit="addComment(event, ${id})">
+                            <div class="form-group">
+                                <label>Add a comment/update</label>
+                                <textarea id="newComment" rows="3" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Add Comment</button>
+                        </form>
+                    </div>
+                `;
+                document.getElementById('complaintModal').style.display = 'block';
+            } catch (error) {
+                alert('Error loading complaint details');
             }
-        }, 10000);
+        }
+
+        // Add Comment
+        async function addComment(e, complaintId) {
+            e.preventDefault();
+            const comment = document.getElementById('newComment').value;
+            if (!comment) {
+                alert('Please enter a comment');
+                return;
+            }
+            try {
+                await apiRequest(`/api/complaints/${complaintId}/comments`, {
+                    method: 'POST',
+                    body: JSON.stringify({ comment })
+                });
+                closeModal();
+                viewComplaint(complaintId);
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        // Edit Profile
+        async function editProfile() {
+            const room = prompt('Enter room number:', currentUser?.room_number || '');
+            const hostel = prompt('Enter hostel name:', currentUser?.hostel_name || '');
+            
+            if (room !== null && hostel !== null) {
+                try {
+                    const data = await apiRequest('/api/users/profile', {
+                        method: 'PUT',
+                        body: JSON.stringify({ room_number: room, hostel_name: hostel })
+                    });
+                    currentUser = data.user;
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    loadDashboard();
+                    alert('✅ Profile updated successfully!');
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+        }
+
+        // UI Helpers
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`${page}Page`).classList.add('active');
+            
+            if (page === 'dashboard') loadDashboard();
+            if (page === 'track') loadTrackComplaints();
+        }
+
+        function showRegister() {
+            document.getElementById('loginPage').querySelector('.form-card').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginPage').querySelector('.form-card').style.display = 'block';
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            token = null;
+            currentUser = null;
+            showLoggedOutUI();
+            showPage('login');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function showLoggedInUI() {
+            document.getElementById('dashboardLink').style.display = 'block';
+            document.getElementById('submitLink').style.display = 'block';
+            document.getElementById('trackLink').style.display = 'block';
+            document.getElementById('logoutLink').style.display = 'block';
+            document.getElementById('loginLink').style.display = 'none';
+        }
+
+        function showLoggedOutUI() {
+            document.getElementById('dashboardLink').style.display = 'none';
+            document.getElementById('submitLink').style.display = 'none';
+            document.getElementById('trackLink').style.display = 'none';
+            document.getElementById('logoutLink').style.display = 'none';
+            document.getElementById('loginLink').style.display = 'block';
+        }
+
+        function showMessage(elementId, message, type) {
+            const div = document.getElementById(elementId);
+            div.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => div.innerHTML = '', 3000);
+        }
+
+        function closeModal() {
+            document.getElementById('complaintModal').style.display = 'none';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
     </script>
 </body>
 </html>
