@@ -4,7 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Middleware
 app.use(express.json());
@@ -33,7 +33,7 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     } else {
         console.log('✅ Connected to SQLite database');
         initDatabase();
-    });
+    }
 });
 
 function initDatabase() {
@@ -74,7 +74,7 @@ function initDatabase() {
         FOREIGN KEY(user_id) REFERENCES users(id)
     )`);
 
-    // Create default admin if not exists
+    // Create default admin
     db.get("SELECT * FROM users WHERE email = ?", ['admin@hostel.com'], (err, user) => {
         if (!user) {
             const hashedPassword = hashPassword('admin123');
@@ -84,7 +84,7 @@ function initDatabase() {
         }
     });
 
-    // Create test student if not exists
+    // Create test student
     db.get("SELECT * FROM users WHERE email = ?", ['student@test.com'], (err, user) => {
         if (!user) {
             const hashedPassword = hashPassword('student123');
@@ -95,7 +95,7 @@ function initDatabase() {
     });
 }
 
-// Token generation (simple but effective)
+// Token generation
 function generateToken(user) {
     return Buffer.from(JSON.stringify({ 
         id: user.id, 
@@ -359,8 +359,8 @@ app.get('/api/dashboard/stats', authenticateToken, (req, res) => {
     }
 });
 
-// Serve frontend
-app.get('*', (req, res) => {
+// Serve frontend - MUST be last route
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
@@ -368,7 +368,6 @@ app.get('*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n🚀 Server running on:`);
     console.log(`   Local: http://localhost:${PORT}`);
-    console.log(`   Network: http://YOUR_IP:${PORT}`);
     console.log(`\n📝 Test Accounts:`);
     console.log(`   Admin: admin@hostel.com / admin123`);
     console.log(`   Student: student@test.com / student123`);

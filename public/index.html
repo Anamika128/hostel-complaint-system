@@ -2,93 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <meta name="theme-color" content="#667eea">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Hostel Complaint System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding-bottom: 70px;
         }
-
-        /* Navbar */
         .navbar {
             background: white;
+            padding: 1rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 16px;
         }
-
         .navbar .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
             flex-wrap: wrap;
+            gap: 10px;
         }
-
         .logo {
             font-size: 1.25rem;
             color: #667eea;
             font-weight: bold;
         }
-
         .nav-links {
             display: flex;
             gap: 12px;
-            align-items: center;
             flex-wrap: wrap;
         }
-
         .nav-links a {
             text-decoration: none;
             color: #333;
             cursor: pointer;
-            transition: color 0.3s;
-            font-size: 14px;
             padding: 8px 12px;
             border-radius: 8px;
             background: #f5f5f5;
+            font-size: 14px;
         }
-
-        .nav-links a:hover,
-        .nav-links a:active {
+        .nav-links a:hover, .nav-links a:active {
             background: #667eea;
             color: white;
         }
-
-        /* Pages */
-        .page {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .page.active {
-            display: block;
-        }
-
+        .page { display: none; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Forms */
         .form-card {
             background: white;
             border-radius: 16px;
@@ -97,48 +68,28 @@
             margin: 24px auto;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
-
         .form-card h2 {
             margin-bottom: 20px;
             color: #333;
             text-align: center;
-            font-size: 1.5rem;
         }
-
         .form-group {
             margin-bottom: 16px;
         }
-
         .form-group label {
             display: block;
             margin-bottom: 8px;
             color: #333;
             font-weight: 500;
-            font-size: 14px;
         }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 10px;
             font-size: 16px;
-            font-family: inherit;
-            transition: border-color 0.3s;
         }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        /* Buttons */
         .btn {
-            display: inline-block;
             padding: 12px 24px;
             border: none;
             border-radius: 10px;
@@ -146,72 +97,49 @@
             font-size: 16px;
             font-weight: 500;
             transition: all 0.3s;
-            text-align: center;
         }
-
         .btn-primary {
             background: #667eea;
             color: white;
+            width: 100%;
         }
-
-        .btn-primary:hover,
-        .btn-primary:active {
+        .btn-primary:hover, .btn-primary:active {
             background: #5a67d8;
             transform: scale(0.98);
         }
-
-        .btn-block {
-            width: 100%;
-        }
-
         .btn-small {
             padding: 8px 16px;
             font-size: 14px;
+            width: auto;
         }
-
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin: 20px 0;
         }
-
         .stat-card {
             background: white;
-            padding: 20px 12px;
-            border-radius: 16px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
         }
-
-        .stat-card h3 {
-            color: #666;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
         .stat-card p {
             font-size: 28px;
             font-weight: bold;
             color: #667eea;
         }
-
-        /* Complaints List */
         .complaint-item {
             background: white;
-            border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .complaint-item:active {
             transform: scale(0.98);
         }
-
         .complaint-header {
             display: flex;
             justify-content: space-between;
@@ -220,193 +148,85 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-
         .complaint-title {
             font-weight: 600;
             color: #333;
-            font-size: 16px;
         }
-
         .complaint-status {
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 500;
         }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #f59e0b;
-        }
-
-        .status-in_progress {
-            background: #dbeafe;
-            color: #3b82f6;
-        }
-
-        .status-resolved {
-            background: #d1fae5;
-            color: #10b981;
-        }
-
-        .complaint-meta {
-            color: #666;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-
-        /* Profile Section */
+        .status-pending { background: #fef3c7; color: #f59e0b; }
+        .status-in_progress { background: #dbeafe; color: #3b82f6; }
+        .status-resolved { background: #d1fae5; color: #10b981; }
         .profile-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px;
             margin: 20px 0;
         }
-
         .info-card {
             background: white;
             padding: 16px;
             border-radius: 12px;
         }
-
         .info-card h4 {
             color: #667eea;
             margin-bottom: 8px;
-            font-size: 14px;
         }
-
-        .info-card p {
-            font-size: 16px;
-            color: #333;
-            font-weight: 500;
-            margin-bottom: 12px;
-        }
-
-        /* Alerts */
         .alert {
             padding: 12px;
             border-radius: 10px;
             margin-bottom: 16px;
-            font-size: 14px;
         }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #ef4444;
-        }
-
-        /* Modal */
+        .alert-success { background: #d1fae5; color: #065f46; }
+        .alert-error { background: #fee2e2; color: #991b1b; }
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
+            z-index: 1000;
         }
-
         .modal-content {
             background: white;
             margin: 10% auto;
             padding: 24px;
-            border-radius: 20px;
             width: 90%;
             max-width: 600px;
+            border-radius: 16px;
             max-height: 80%;
             overflow-y: auto;
             position: relative;
         }
-
         .close {
             position: absolute;
             right: 20px;
             top: 20px;
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
-            color: #666;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #f0f0f0;
         }
-
-        .close:active {
-            background: #ddd;
-        }
-
-        /* Footer */
         footer {
             background: white;
             text-align: center;
             padding: 20px;
             margin-top: 40px;
-            color: #666;
             font-size: 12px;
+            color: #666;
         }
-
-        /* Loading Spinner */
         .loading {
             text-align: center;
             color: white;
-            padding: 20px;
+            padding: 40px;
         }
-
-        /* Mobile Optimizations */
         @media (max-width: 768px) {
-            .navbar .container {
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .nav-links {
-                justify-content: center;
-            }
-            
-            .nav-links a {
-                font-size: 12px;
-                padding: 6px 12px;
-            }
-            
-            .stats-grid {
-                gap: 10px;
-            }
-            
-            .stat-card {
-                padding: 16px 8px;
-            }
-            
-            .stat-card p {
-                font-size: 24px;
-            }
-            
-            .form-card {
-                padding: 20px;
-                margin: 16px;
-            }
-            
-            .modal-content {
-                margin: 20% auto;
-                padding: 20px;
-            }
-        }
-
-        /* Touch-friendly targets */
-        button, .btn, .complaint-item, .nav-links a {
-            min-height: 44px;
-            touch-action: manipulation;
+            .navbar .container { flex-direction: column; }
+            .stats-grid { gap: 10px; }
+            .stat-card p { font-size: 24px; }
         }
     </style>
 </head>
@@ -439,13 +259,13 @@
                         <label>🔒 Password</label>
                         <input type="password" id="loginPassword" placeholder="Enter your password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
                 </form>
                 <p style="text-align:center; margin-top:16px;">
                     New user? <a href="#" onclick="showRegister()">Create account</a>
                 </p>
                 <div style="margin-top:20px; padding:12px; background:#f5f5f5; border-radius:10px;">
-                    <p style="font-size:12px; color:#666; margin-bottom:8px;"><strong>Demo Accounts:</strong></p>
+                    <p style="font-size:12px;"><strong>Demo Accounts:</strong></p>
                     <p style="font-size:12px;">👑 Admin: admin@hostel.com / admin123</p>
                     <p style="font-size:12px;">🎓 Student: student@test.com / student123</p>
                 </div>
@@ -469,13 +289,13 @@
                     </div>
                     <div class="form-group">
                         <label>🏠 Room Number</label>
-                        <input type="text" id="regRoom" placeholder="Optional">
+                        <input type="text" id="regRoom">
                     </div>
                     <div class="form-group">
                         <label>🏢 Hostel Name</label>
-                        <input type="text" id="regHostel" placeholder="Optional">
+                        <input type="text" id="regHostel">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
                 </form>
                 <p style="text-align:center; margin-top:16px;">
                     Already have an account? <a href="#" onclick="showLogin()">Login here</a>
@@ -517,7 +337,7 @@
                         <label>📄 Description</label>
                         <textarea id="complaintDescription" rows="5" placeholder="Detailed description" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Submit Complaint</button>
+                    <button type="submit" class="btn btn-primary">Submit Complaint</button>
                 </form>
             </div>
         </div>
@@ -540,12 +360,11 @@
     </div>
 
     <footer>
-        <div class="container">
-            <p>© 2024 Hostel Complaint System | Track and manage complaints efficiently</p>
-        </div>
+        <p>© 2024 Hostel Complaint System | Track and manage complaints efficiently</p>
     </footer>
 
     <script>
+        // API Configuration
         const API_URL = '';
         let token = localStorage.getItem('token');
         let currentUser = null;
@@ -575,20 +394,16 @@
                 headers['Authorization'] = `Bearer ${token}`;
             }
             
-            try {
-                const response = await fetch(`${API_URL}${endpoint}`, {
-                    ...options,
-                    headers
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.error || 'Something went wrong');
-                }
-                return data;
-            } catch (error) {
-                console.error('API Error:', error);
-                throw error;
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                ...options,
+                headers
+            });
+            
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Something went wrong');
             }
+            return data;
         }
 
         // Login
@@ -649,11 +464,9 @@
         // Load Dashboard
         async function loadDashboard() {
             try {
-                const [statsData, profileData, complaintsData] = await Promise.all([
-                    apiRequest('/api/dashboard/stats'),
-                    apiRequest('/api/users/profile'),
-                    apiRequest('/api/complaints')
-                ]);
+                const statsData = await apiRequest('/api/dashboard/stats');
+                const profileData = await apiRequest('/api/users/profile');
+                const complaintsData = await apiRequest('/api/complaints');
                 
                 const stats = statsData.stats;
                 const user = profileData.user;
@@ -664,12 +477,12 @@
                         <div class="info-card">
                             <h4>👋 Welcome</h4>
                             <p>${escapeHtml(user.name)}</p>
-                            <p style="font-size:12px; color:#667eea;">${user.role === 'admin' ? '👑 Admin' : '🎓 Student'}</p>
+                            <p style="font-size:12px;">${user.role === 'admin' ? '👑 Admin' : '🎓 Student'}</p>
                         </div>
                         <div class="info-card">
                             <h4>🏠 Room Number</h4>
                             <p>${user.room_number || 'Not set'}</p>
-                            <button onclick="editProfile()" class="btn btn-small btn-primary">Edit</button>
+                            <button onclick="editProfile()" class="btn btn-primary btn-small">Edit</button>
                         </div>
                         <div class="info-card">
                             <h4>🏢 Hostel</h4>
@@ -678,48 +491,32 @@
                     </div>
 
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>Total</h3>
-                            <p>${stats.total}</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Pending</h3>
-                            <p>${stats.pending}</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>In Progress</h3>
-                            <p>${stats.inProgress}</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Resolved</h3>
-                            <p>${stats.resolved}</p>
-                        </div>
+                        <div class="stat-card"><h3>Total</h3><p>${stats.total}</p></div>
+                        <div class="stat-card"><h3>Pending</h3><p>${stats.pending}</p></div>
+                        <div class="stat-card"><h3>In Progress</h3><p>${stats.inProgress}</p></div>
+                        <div class="stat-card"><h3>Resolved</h3><p>${stats.resolved}</p></div>
                     </div>
 
-                    <h3 style="color:white; margin: 16px 0;">📌 Recent Complaints</h3>
-                    <div id="recentComplaints">
-                        ${complaints.length === 0 ? 
-                            '<div class="complaint-item"><p style="color:#666;">No complaints yet. <a href="#" onclick="showPage(\'submit\')">Submit your first complaint</a></p></div>' : 
-                            complaints.slice(0,5).map(c => `
-                                <div class="complaint-item" onclick="viewComplaint(${c.id})">
-                                    <div class="complaint-header">
-                                        <span class="complaint-title">${escapeHtml(c.title)}</span>
-                                        <span class="complaint-status status-${c.status}">${c.status.replace('_', ' ')}</span>
-                                    </div>
-                                    <div class="complaint-meta">
-                                        📅 ${new Date(c.created_at).toLocaleDateString()} | 📂 ${c.category}
-                                    </div>
+                    <h3 style="color:white; margin:16px 0;">📌 Recent Complaints</h3>
+                    ${complaints.length === 0 ? 
+                        '<div class="complaint-item"><p>No complaints yet. <a href="#" onclick="showPage(\'submit\')">Submit your first complaint</a></p></div>' : 
+                        complaints.slice(0,5).map(c => `
+                            <div class="complaint-item" onclick="viewComplaint(${c.id})">
+                                <div class="complaint-header">
+                                    <span class="complaint-title">${escapeHtml(c.title)}</span>
+                                    <span class="complaint-status status-${c.status}">${c.status.replace('_', ' ')}</span>
                                 </div>
-                            `).join('')}
-                    </div>
+                                <div style="font-size:12px; color:#666;">📅 ${new Date(c.created_at).toLocaleDateString()}</div>
+                            </div>
+                        `).join('')}
                 `;
             } catch (error) {
                 console.error('Error loading dashboard:', error);
                 document.getElementById('dashboardContent').innerHTML = `
                     <div class="form-card">
                         <p style="color:red; text-align:center;">❌ Error loading dashboard</p>
-                        <p style="text-align:center; margin-top:10px;">Please check if server is running</p>
-                        <button onclick="loadDashboard()" class="btn btn-primary btn-block" style="margin-top:10px;">Retry</button>
+                        <p style="text-align:center;">${error.message}</p>
+                        <button onclick="loadDashboard()" class="btn btn-primary" style="margin-top:10px;">Retry</button>
                     </div>
                 `;
             }
@@ -754,21 +551,25 @@
                 const complaints = data.complaints || [];
 
                 document.getElementById('trackingList').innerHTML = complaints.length === 0 ? 
-                    '<div class="complaint-item"><p style="color:#666;">No complaints yet. <a href="#" onclick="showPage(\'submit\')">Submit your first complaint</a></p></div>' :
+                    '<div class="complaint-item"><p>No complaints yet. <a href="#" onclick="showPage(\'submit\')">Submit your first complaint</a></p></div>' :
                     complaints.map(c => `
                         <div class="complaint-item" onclick="viewComplaint(${c.id})">
                             <div class="complaint-header">
                                 <span class="complaint-title">${escapeHtml(c.title)}</span>
                                 <span class="complaint-status status-${c.status}">${c.status.replace('_', ' ')}</span>
                             </div>
-                            <div class="complaint-meta">
-                                📂 ${c.category} | 📅 ${new Date(c.created_at).toLocaleDateString()}
-                            </div>
+                            <div style="font-size:12px; color:#666;">📂 ${c.category} | 📅 ${new Date(c.created_at).toLocaleDateString()}</div>
                         </div>
                     `).join('');
             } catch (error) {
                 console.error('Error loading complaints:', error);
-                document.getElementById('trackingList').innerHTML = '<div class="complaint-item"><p style="color:red;">Error loading complaints. Please refresh.</p></div>';
+                document.getElementById('trackingList').innerHTML = `
+                    <div class="complaint-item">
+                        <p style="color:red;">❌ Error loading complaints</p>
+                        <p>${error.message}</p>
+                        <button onclick="loadTrackComplaints()" class="btn btn-primary btn-small">Retry</button>
+                    </div>
+                `;
             }
         }
 
@@ -787,7 +588,6 @@
                     <p><strong>📄 Description:</strong></p>
                     <p style="background:#f5f5f5; padding:12px; border-radius:8px;">${escapeHtml(complaint.description)}</p>
                     <p><strong>📅 Submitted:</strong> ${new Date(complaint.created_at).toLocaleString()}</p>
-                    ${complaint.admin_response ? `<p><strong>👑 Admin Response:</strong> ${escapeHtml(complaint.admin_response)}</p>` : ''}
                     
                     <h4 style="margin-top:20px;">💬 Comments & Updates</h4>
                     <div style="background:#f5f5f5; padding:12px; border-radius:8px; max-height:300px; overflow-y:auto;">
@@ -807,13 +607,13 @@
                                 <label>Add a comment/update</label>
                                 <textarea id="newComment" rows="3" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Add Comment</button>
+                            <button type="submit" class="btn btn-primary">Add Comment</button>
                         </form>
                     </div>
                 `;
                 document.getElementById('complaintModal').style.display = 'block';
             } catch (error) {
-                alert('Error loading complaint details');
+                alert('Error loading complaint details: ' + error.message);
             }
         }
 
@@ -865,6 +665,12 @@
             
             if (page === 'dashboard') loadDashboard();
             if (page === 'track') loadTrackComplaints();
+            if (page === 'submit') {
+                document.getElementById('complaintTitle').value = '';
+                document.getElementById('complaintCategory').value = '';
+                document.getElementById('complaintDescription').value = '';
+                document.getElementById('submitMessage').innerHTML = '';
+            }
         }
 
         function showRegister() {
@@ -884,8 +690,6 @@
             currentUser = null;
             showLoggedOutUI();
             showPage('login');
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
         }
 
         function showLoggedInUI() {
